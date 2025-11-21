@@ -14,9 +14,21 @@ let package = Package(
             targets: ["SnappThemingDesignTokensSupport"]
         ),
     ],
+    dependencies: [
+        .package(url: "https://github.com/Snapp-Mobile/SnappTheming.git", from: "0.1.3"),
+        .package(url: "https://github.com/Snapp-Mobile/SnappDesignTokens.git", from: "0.1.0"),
+        .package(url: "https://github.com/Snapp-Mobile/SwiftFormatLintPlugin.git", from: "1.0.4"),
+    ],
     targets: [
         .target(
-            name: "SnappThemingDesignTokensSupport"
+            name: "SnappThemingDesignTokensSupport",
+            dependencies: [
+                "SnappTheming",
+                "SnappDesignTokens",
+            ],
+            plugins: [
+                .plugin(name: "Lint", package: "SwiftFormatLintPlugin")
+            ]
         ),
         .testTarget(
             name: "SnappThemingDesignTokensSupportTests",
