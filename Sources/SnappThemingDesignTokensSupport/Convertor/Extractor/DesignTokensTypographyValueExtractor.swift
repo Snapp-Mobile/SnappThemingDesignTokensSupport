@@ -17,7 +17,7 @@ extension DesignTokensTokenValueExtractor {
     }
 
     static func typography(
-        fontWeightMapping: [FontWeightValue.RawValue: String]? = nil
+        fontWeightMapping: FontWeightMapping? = nil
     ) -> Self {
         .init(\.typographyCache) { (value: TypographyValue) in
             guard

@@ -32,7 +32,16 @@ let package = Package(
         ),
         .testTarget(
             name: "SnappThemingDesignTokensSupportTests",
-            dependencies: ["SnappThemingDesignTokensSupport"]
+            dependencies: ["SnappThemingDesignTokensSupport"],
+            resources: [
+                .copy("Resources/design.tokens.json"),
+                .copy("Resources/expected.snapptheming.json"),
+                .copy("Resources/alien.svg"),
+                .copy("Resources/alien.png"),
+                .copy("Resources/alien.jpg"),
+                .copy("Resources/loading.lottie"),
+                .copy("Resources/ArialBlack.ttf"),
+            ]
         ),
     ]
 )
