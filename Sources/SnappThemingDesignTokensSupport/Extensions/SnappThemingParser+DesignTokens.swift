@@ -22,7 +22,7 @@ extension SnappThemingParser {
 
         let decoder = JSONDecoder()
         let token: Token
-        if #available(iOS 17, *) {
+        if #available(iOS 17, macOS 14, *) {
             token = try decoder.decode(
                 Token.self,
                 from: data,
