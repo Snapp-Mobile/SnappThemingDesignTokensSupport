@@ -13,7 +13,7 @@ extension DesignTokensTokenValueExtractor {
         case unresolvedReferences
     }
 
-    static func gradient(using format: SnappThemingColorFormat) -> Self {
+    static func gradient(using format: ColorHexFormat) -> Self {
         .init(\.gradientsCache) { (value: GradientValue) in
             let colorsWithPositions = try value.map { gradientColorValue in
                 guard
@@ -32,7 +32,7 @@ extension DesignTokensTokenValueExtractor {
                 try colorsWithPositions
                 .sorted(by: { $0.1 < $1.1 })
                 .map(\.0)
-                .map { try $0.hexString(using: format) }
+                .map { try $0.hex(format: format, skipFullOpacityAlpha: true) }
                 .map(SnappThemingColorRepresentation.hex(_:))
                 .map(SnappThemingToken.value(_:))
 
