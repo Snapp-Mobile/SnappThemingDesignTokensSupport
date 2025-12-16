@@ -12,3 +12,5 @@
     steps:
       - uses: actions/checkout@v4
       - uses: Snapp-Mobile/swift-coverage-action@v1.0.1
+        with:
+            xcode-version: "26.1"
