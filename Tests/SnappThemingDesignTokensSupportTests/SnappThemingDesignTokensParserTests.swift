@@ -153,6 +153,22 @@ struct SnappThemingDesignTokensParserTests {
                 """#,
                 DesignTokensTypographyValueExtractorError.fontsEmpty
             ),
+            (
+                #"""
+                {
+                    "blue-to-red": {
+                        "$type": "gradient",
+                        "$value": [
+                            {
+                                "color": "{color}",
+                                "position": 0
+                            }
+                        ]
+                    }
+                }
+                """#,
+                DesignTokensGradientValueExtractionError.unresolvedReferences
+            ),
         ] as [(String, Error)]
     )
     func testFailingParsingDesignTokensJSONIntoSnappThemingDeclaration(

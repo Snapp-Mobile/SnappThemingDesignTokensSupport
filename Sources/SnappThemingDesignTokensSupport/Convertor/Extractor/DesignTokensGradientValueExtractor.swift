@@ -8,11 +8,11 @@ import Foundation
 import SnappDesignTokens
 import SnappTheming
 
-extension DesignTokensTokenValueExtractor {
-    private enum GradientExtractionError: Error {
-        case unresolvedReferences
-    }
+enum DesignTokensGradientValueExtractionError: Error {
+    case unresolvedReferences
+}
 
+extension DesignTokensTokenValueExtractor {
     static func gradient(using format: ColorHexFormat) -> Self {
         .init(\.gradientsCache) { (value: GradientValue) in
             let colorsWithPositions = try value.map { gradientColorValue in
@@ -20,7 +20,7 @@ extension DesignTokensTokenValueExtractor {
                     case .value(let color) = gradientColorValue.color,
                     case .value(let position) = gradientColorValue.position
                 else {
-                    throw GradientExtractionError.unresolvedReferences
+                    throw DesignTokensGradientValueExtractionError.unresolvedReferences
                 }
                 return (
                     color,
