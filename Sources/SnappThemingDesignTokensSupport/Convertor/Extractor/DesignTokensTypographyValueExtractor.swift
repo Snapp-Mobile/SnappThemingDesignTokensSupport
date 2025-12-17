@@ -8,14 +8,14 @@ import Foundation
 import SnappDesignTokens
 import SnappTheming
 
-extension DesignTokensTokenValueExtractor {
-    private enum TypographyExtractionError: Error {
-        case unresolvedReferences
-        case unresolvedExpressions
-        case invalidFontSizeUnit
-        case fontsEmpty
-    }
+enum DesignTokensTypographyValueExtractorError: Error, Equatable, Sendable {
+    case unresolvedReferences
+    case unresolvedExpressions
+    case invalidFontSizeUnit
+    case fontsEmpty
+}
 
+extension DesignTokensTokenValueExtractor {
     static func typography(
         fontWeightMapping: FontWeightMapping? = nil
     ) -> Self {
@@ -25,19 +25,22 @@ extension DesignTokensTokenValueExtractor {
                 case .value(let fontWeight) = value.fontWeight,
                 case .value(let fontSizeValue) = value.fontSize
             else {
-                throw TypographyExtractionError.unresolvedReferences
+                throw DesignTokensTypographyValueExtractorError
+                    .unresolvedReferences
             }
 
             guard let fontFamilyName = fontFamilyValue.names.first else {
-                throw TypographyExtractionError.fontsEmpty
+                throw DesignTokensTypographyValueExtractorError.fontsEmpty
             }
 
             guard case .constant(let fontSize) = fontSizeValue else {
-                throw TypographyExtractionError.unresolvedExpressions
+                throw DesignTokensTypographyValueExtractorError
+                    .unresolvedExpressions
             }
 
             guard fontSize.unit == .px else {
-                throw TypographyExtractionError.invalidFontSizeUnit
+                throw DesignTokensTypographyValueExtractorError
+                    .invalidFontSizeUnit
             }
 
             var fontName = fontFamilyName

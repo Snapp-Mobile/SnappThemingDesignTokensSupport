@@ -81,6 +81,78 @@ struct SnappThemingDesignTokensParserTests {
                     ])
                 )
             ),
+            (
+                #"""
+                {
+                    "typography": {
+                        "$type": "typography",
+                        "$value": {
+                            "fontFamily": "{reference}",
+                            "fontSize": "{reference}",
+                            "fontWeight": "{reference}",
+                            "letterSpacing": "{reference}",
+                            "lineHeight": "{reference}"
+                        }
+
+                    }
+                }
+                """#,
+                DesignTokensTypographyValueExtractorError.unresolvedReferences
+            ),
+            (
+                #"""
+                {
+                    "typography": {
+                        "$type": "typography",
+                        "$value": {
+                            "fontFamily": "Arial",
+                            "fontSize": "2 * 10px",
+                            "fontWeight": 700,
+                            "letterSpacing": "0.1px",
+                            "lineHeight": 1.2
+                        }
+
+                    }
+                }
+                """#,
+                DesignTokensTypographyValueExtractorError.unresolvedExpressions
+            ),
+            (
+                #"""
+                {
+                    "typography": {
+                        "$type": "typography",
+                        "$value": {
+                            "fontFamily": "Arial",
+                            "fontSize": "10rem",
+                            "fontWeight": 700,
+                            "letterSpacing": "0.1px",
+                            "lineHeight": 1.2
+                        }
+
+                    }
+                }
+                """#,
+                DesignTokensTypographyValueExtractorError.invalidFontSizeUnit
+            ),
+            (
+                #"""
+                {
+                    "typography": {
+                        "$type": "typography",
+                        "$value": {
+                            "fontFamily": [],
+                            "fontSize": "10px",
+                            "fontWeight": 700,
+                            "letterSpacing": "0.1px",
+                            "lineHeight": 1.2
+                        }
+
+                    }
+                }
+                """#,
+                DesignTokensTypographyValueExtractorError.fontsEmpty
+            ),
         ] as [(String, Error)]
     )
     func testFailingParsingDesignTokensJSONIntoSnappThemingDeclaration(
@@ -97,6 +169,42 @@ struct SnappThemingDesignTokensParserTests {
                 designTokensConverterConfiguration: configuration
             )
         }
+    }
+
+    @Test(
+        "Test FontWeight to FontPostscriptName mapping during parsing DesignTokens JSON into SnappThemingDeclaration",
+        arguments: [
+            (nil, "Arial"),
+            ([100: "Thin"], "Arial-Thin"),
+        ] as [(FontWeightMapping?, String)]
+    )
+    func testSuccessfulFontWeightToFontPostscriptNameMapping(
+        fontWeightMapping: FontWeightMapping?,
+        expectedPostscriptName: String
+    ) async throws {
+        let configuration = DesignTokensConverter.Configuration(
+            fontWeightMapping: fontWeightMapping
+        )
+        let declaration = try await SnappThemingParser.parse(
+            fromDesignTokens: #"""
+            {
+                "typography": {
+                    "$type": "typography",
+                    "$value": {
+                        "fontFamily": ["Arial"],
+                        "fontSize": "10px",
+                        "fontWeight": 100,
+                        "letterSpacing": "0.1px",
+                        "lineHeight": 1.2
+                    }
+
+                }
+            }
+            """#,
+            designTokensConverterConfiguration: configuration
+        )
+        let representation: SnappThemingTypographyRepresentation = try #require(declaration.typography.typography)
+        #expect(representation.font.value?.postScriptName == expectedPostscriptName)
     }
 
     @Test(
