@@ -66,6 +66,21 @@ struct SnappThemingDesignTokensParserTests {
                     forKey: "unsupported"
                 )
             ),
+            (
+                #"""
+                {
+                    "expression": {
+                        "$type": "dimension",
+                        "$value": "2 * 10px"
+                    }
+                }
+                """#,
+                DesignTokensDimensionValueExtractorError.unresolvedExpression(
+                    DimensionExpression(elements: [
+                        .value(2), .multiply, .value(10, .px)
+                    ])
+                )
+            ),
         ] as [(String, Error)]
     )
     func testFailingParsingDesignTokensJSONIntoSnappThemingDeclaration(
@@ -78,6 +93,7 @@ struct SnappThemingDesignTokensParserTests {
         await #expect(throws: expectedError as NSError) {
             try await SnappThemingParser.parse(
                 fromDesignTokens: designTokensJSON,
+                tokenProcessor: .passthrough,
                 designTokensConverterConfiguration: configuration
             )
         }
