@@ -1,0 +1,16 @@
+ name: Package Test
+
+ on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+ jobs:
+  coverage:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Snapp-Mobile/swift-coverage-action@v1.0.1
+        with:
+            xcode-version: "26.1"
