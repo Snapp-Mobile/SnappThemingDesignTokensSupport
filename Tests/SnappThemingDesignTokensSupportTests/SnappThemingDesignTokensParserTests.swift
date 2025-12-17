@@ -83,9 +83,7 @@ struct SnappThemingDesignTokensParserTests {
         }
     }
 
-    // TODO: Fix failing tests - https://github.com/Snapp-Mobile/SnappThemingDesignTokensSupport/issues/18
     @Test(
-        .disabled(),
         arguments: [
             ("design.tokens", "expected.snapptheming")
         ]
