@@ -41,6 +41,8 @@ let package = Package(
                 .copy("Resources/alien.jpg"),
                 .copy("Resources/loading.lottie"),
                 .copy("Resources/ArialBlack.ttf"),
+                .copy("Resources/unknown"),
+                .copy("Resources/unsupported.extension"),
             ]
         ),
     ]

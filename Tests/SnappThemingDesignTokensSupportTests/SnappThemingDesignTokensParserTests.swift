@@ -9,6 +9,7 @@ import Foundation
 import SnappDesignTokens
 import SnappTheming
 import Testing
+import UniformTypeIdentifiers
 
 @testable import SnappThemingDesignTokensSupport
 
@@ -169,6 +170,35 @@ struct SnappThemingDesignTokensParserTests {
                 """#,
                 DesignTokensGradientValueExtractionError.unresolvedReferences
             ),
+            (
+                #"""
+                {
+                    "unknown": {
+                        "$type": "file",
+                        "$value": "unknown"
+                    }
+                }
+                """#,
+                DesignTokensFileValueExtractorError.unknownFileType(
+                    Bundle.module.resourceURL!.appendingPathComponent("unknown")
+                )
+            ),
+            (
+                #"""
+                {
+                    "unknown": {
+                        "$type": "file",
+                        "$value": "unsupported.extension"
+                    }
+                }
+                """#,
+                DesignTokensFileValueExtractorError.unsupportedFileType(
+                    Bundle.module.resourceURL!.appendingPathComponent(
+                        "unsupported.extension"
+                    ),
+                    UTType(filenameExtension: "extension")!
+                )
+            ),
         ] as [(String, Error)]
     )
     func testFailingParsingDesignTokensJSONIntoSnappThemingDeclaration(
@@ -181,6 +211,9 @@ struct SnappThemingDesignTokensParserTests {
         await #expect(throws: expectedError as NSError) {
             try await SnappThemingParser.parse(
                 fromDesignTokens: designTokensJSON,
+                tokenDecodingConfiguration: TokenDecodingConfiguration(
+                    file: .testResources
+                ),
                 tokenProcessor: .passthrough,
                 designTokensConverterConfiguration: configuration
             )

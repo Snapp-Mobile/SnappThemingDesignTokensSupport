@@ -9,6 +9,11 @@ import SnappDesignTokens
 import SnappTheming
 import UniformTypeIdentifiers
 
+enum DesignTokensFileValueExtractorError: Error, Equatable {
+    case unknownFileType(URL)
+    case unsupportedFileType(URL, UTType)
+}
+
 extension DesignTokensTokenValueExtractor {
     static var file: Self {
         .init {
@@ -27,7 +32,9 @@ extension DesignTokensTokenValueExtractor {
                     filenameExtension: fileValue.url.pathExtension
                 )
             else {
-                return
+                throw DesignTokensFileValueExtractorError.unknownFileType(
+                    fileValue.url
+                )
             }
 
             switch (
@@ -70,7 +77,10 @@ extension DesignTokensTokenValueExtractor {
                     )
                 )
             case (_, _, _):
-                break
+                throw DesignTokensFileValueExtractorError.unsupportedFileType(
+                    fileValue.url,
+                    contentType
+                )
             }
         }
     }
