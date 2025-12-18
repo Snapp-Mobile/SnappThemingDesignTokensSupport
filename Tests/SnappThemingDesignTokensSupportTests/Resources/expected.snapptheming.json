@@ -48,6 +48,7 @@
     "baseDimensionSpacing20" : 20,
     "semanticFontsizeBody" : 16,
     "semanticFontsizeH1" : 32,
+    "semanticNumberAspectSquare" : 1,
     "semanticSpacingMedium" : 20,
     "semanticSpacingSmall" : 10
   },
