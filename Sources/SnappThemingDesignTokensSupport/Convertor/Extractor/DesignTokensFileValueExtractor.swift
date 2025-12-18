@@ -10,10 +10,6 @@ import SnappTheming
 import UniformTypeIdentifiers
 
 extension DesignTokensTokenValueExtractor {
-    private enum ExtractionError: Error {
-        case invalidData
-    }
-
     static var file: Self {
         .init {
             (
@@ -25,12 +21,6 @@ extension DesignTokensTokenValueExtractor {
             let base64EncodedString = data.base64EncodedString(
                 options: .endLineWithLineFeed
             )
-
-            guard
-                let base64EncodedData = Data(base64Encoded: base64EncodedString)
-            else {
-                throw ExtractionError.invalidData
-            }
 
             guard
                 let contentType = UTType(
@@ -67,7 +57,7 @@ extension DesignTokensTokenValueExtractor {
                         source: SnappThemingDataURI(
                             type: contentType,
                             encoding: .base64,
-                            data: base64EncodedData
+                            data: data
                         )
                     )
                 )
@@ -76,7 +66,7 @@ extension DesignTokensTokenValueExtractor {
                 (_, _, .lotPathExtension):
                 caches.animationCache[key] = .value(
                     SnappThemingAnimationRepresentation(
-                        animation: .lottie(base64EncodedData)
+                        animation: .lottie(data)
                     )
                 )
             case (_, _, _):
