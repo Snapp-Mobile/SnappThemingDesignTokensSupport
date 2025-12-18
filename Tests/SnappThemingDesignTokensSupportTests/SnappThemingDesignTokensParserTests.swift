@@ -199,6 +199,17 @@ struct SnappThemingDesignTokensParserTests {
                     UTType(filenameExtension: "extension")!
                 )
             ),
+            (
+                #"""
+                {
+                    "empty": {
+                        "$type": "fontFamily",
+                        "$value": []
+                    }
+                }
+                """#,
+                DesignTokensFontFamilyValueExtractionError.fontsEmpty
+            ),
         ] as [(String, Error)]
     )
     func testFailingParsingDesignTokensJSONIntoSnappThemingDeclaration(
