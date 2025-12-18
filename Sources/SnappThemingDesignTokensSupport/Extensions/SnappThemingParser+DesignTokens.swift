@@ -37,9 +37,8 @@ extension SnappThemingParser {
         tokenProcessor processor: TokenProcessor = .defaultDesignTokensConversionProcessor(),
         designTokensConverterConfiguration configuration: DesignTokensConverter.Configuration = .default
     ) async throws -> SnappThemingDeclaration {
-        guard let data = input.data(using: .utf8) else {
-            throw SnappThemingParserError.invalidData
-        }
+        // It is safe to force unwrap since Strings in Swift use Unicode internally.
+        let data = input.data(using: .utf8)!
 
         let decoder = JSONDecoder()
         let token: Token

@@ -9,11 +9,12 @@ import SnappDesignTokens
 import SnappTheming
 import UniformTypeIdentifiers
 
-extension DesignTokensTokenValueExtractor {
-    private enum ExtractionError: Error {
-        case invalidData
-    }
+enum DesignTokensFileValueExtractorError: Error, Equatable {
+    case unknownFileType(URL)
+    case unsupportedFileType(URL, UTType)
+}
 
+extension DesignTokensTokenValueExtractor {
     static var file: Self {
         .init {
             (
@@ -27,17 +28,13 @@ extension DesignTokensTokenValueExtractor {
             )
 
             guard
-                let base64EncodedData = Data(base64Encoded: base64EncodedString)
-            else {
-                throw ExtractionError.invalidData
-            }
-
-            guard
                 let contentType = UTType(
                     filenameExtension: fileValue.url.pathExtension
                 )
             else {
-                return
+                throw DesignTokensFileValueExtractorError.unknownFileType(
+                    fileValue.url
+                )
             }
 
             switch (
@@ -67,7 +64,7 @@ extension DesignTokensTokenValueExtractor {
                         source: SnappThemingDataURI(
                             type: contentType,
                             encoding: .base64,
-                            data: base64EncodedData
+                            data: data
                         )
                     )
                 )
@@ -76,11 +73,14 @@ extension DesignTokensTokenValueExtractor {
                 (_, _, .lotPathExtension):
                 caches.animationCache[key] = .value(
                     SnappThemingAnimationRepresentation(
-                        animation: .lottie(base64EncodedData)
+                        animation: .lottie(data)
                     )
                 )
             case (_, _, _):
-                break
+                throw DesignTokensFileValueExtractorError.unsupportedFileType(
+                    fileValue.url,
+                    contentType
+                )
             }
         }
     }
