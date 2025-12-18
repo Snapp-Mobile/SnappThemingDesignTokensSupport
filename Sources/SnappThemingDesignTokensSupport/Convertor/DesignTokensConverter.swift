@@ -221,7 +221,9 @@ public struct DesignTokensConverter: Sendable {
             return .typography(fontWeightMapping: configuration.fontWeightMapping)
         case .gradient:
             return .gradient(using: configuration.colorHexFormat)
-        case .fontWeight, .number,
+        case .number:
+            return .number
+        case .fontWeight,
             .duration, .shadow, .strokeStyle, .border,
             .cubicBezier, .transition:
             fallthrough

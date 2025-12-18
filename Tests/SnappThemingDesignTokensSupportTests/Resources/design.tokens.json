@@ -119,6 +119,14 @@
                     }
                 ]
             }
+        },
+        "number": {
+            "aspect": {
+                "square": {
+                    "$type": "number",
+                    "$value": 1.0
+                }
+            }
         }
     },
     "files": {

@@ -81,13 +81,13 @@ struct SnappThemingDesignTokensParserTests {
                 #"""
                 {
                     "unsupported": {
-                        "$type": "number",
-                        "$value": 0.5
+                        "$type": "fontWeight",
+                        "$value": 100
                     }
                 }
                 """#,
                 DesignTokensConverter.Error.unsupportedToken(
-                    .value(.number(0.5)),
+                    .value(.fontWeight(FontWeightValue(alias: .thin))),
                     forKey: "unsupported"
                 )
             ),
