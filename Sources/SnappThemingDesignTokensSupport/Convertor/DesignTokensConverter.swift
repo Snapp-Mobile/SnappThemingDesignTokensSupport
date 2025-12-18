@@ -30,12 +30,14 @@ public struct DesignTokensConverter: Sendable {
         ///   - token: The `Token` that could not be processed.
         ///   - forKey: The key associated with the unsupported token.
         case unsupportedToken(Token, forKey: String)
+        case malformedDynamicColorsGroup(TokenGroup, forKey: String)
 
         /// A localized description of the error.
         public var errorDescription: String? {
             switch self {
             case .invalidRootToken: "Invalid root token. Must be a group."
             case let .unsupportedToken(_, key): "Unsupported token value type with key: \(key)."
+            case let .malformedDynamicColorsGroup(_, key): "Malformed dynamic colors group for key: \(key)."
             }
         }
     }
@@ -146,7 +148,7 @@ public struct DesignTokensConverter: Sendable {
             )
             try extractor.extract(value, for: key, into: &caches)
         case .group(let group):
-            try await extract(group, for: key, into: &caches)
+            try await extractDynamicColorsGroup(group, for: key, into: &caches)
         case .alias, .array, .unknown:
             throw Error.unsupportedToken(token, forKey: key)
         }
@@ -161,16 +163,20 @@ public struct DesignTokensConverter: Sendable {
     ///   - key: The key associated with the token group.
     ///   - caches: The `SnappThemingDeclarationCaches` to store the dynamic color.
     /// - Throws: `DesignTokensConverter.Error` if color conversion fails.
-    private func extract(
+    private func extractDynamicColorsGroup(
         _ group: TokenGroup,
         for key: String,
         into caches: inout SnappThemingDeclarationCaches
     ) async throws {
         guard
-            case .value(.color(let lightColorToken)) = group[configuration.dynamicColorKeys.light],
-            case .value(.color(let darkColorToken)) = group[configuration.dynamicColorKeys.dark]
+            case .value(.color(let lightColorToken)) = group[
+                configuration.dynamicColorKeys.light
+            ],
+            case .value(.color(let darkColorToken)) = group[
+                configuration.dynamicColorKeys.dark
+            ]
         else {
-            return
+            throw Error.malformedDynamicColorsGroup(group, forKey: key)
         }
 
         let lightColorHEX = try lightColorToken.hex(

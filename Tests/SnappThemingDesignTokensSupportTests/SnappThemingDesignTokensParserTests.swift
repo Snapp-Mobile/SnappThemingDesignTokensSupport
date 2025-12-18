@@ -18,11 +18,21 @@ struct SnappThemingDesignTokensParserTests {
         arguments: [
             (
                 #"""
+                {"red": {"$type": "color", "$value": "#FF0000"}}
+                """#,
+                #"""
                 {
-                  "red": {
-                    "$type": "color",
-                    "$value": "#FF0000"
+                  "colors" : {
+                    "red" : "#FF0000"
                   }
+                }
+                """#
+            ),
+            (
+                #"""
+                {
+                  "red": {"$type": "color", "$value": "#FF0000"},
+                  "unsupported": {"$type": "fontWeight", "$value": 350}
                 }
                 """#,
                 #"""
@@ -32,14 +42,19 @@ struct SnappThemingDesignTokensParserTests {
                   }
                 }
                 """#
-            )
+            ),
         ] as [(String, String)]
     )
     func testSuccessfulParsingDesignTokensJSONIntoSnappThemingDeclaration(
         _ designTokensJSON: String,
         _ expectedSnappThemingJSON: String
     ) async throws {
-        let declaration = try await SnappThemingParser.parse(fromDesignTokens: designTokensJSON)
+        let declaration = try await SnappThemingParser.parse(
+            fromDesignTokens: designTokensJSON,
+            designTokensConverterConfiguration: DesignTokensConverter.Configuration(
+                unsupportedTokenHandlingStrategy: .skip
+            )
+        )
         let encodedSnappThemingData = try SnappThemingParser.encode(declaration)
         let encodedSnappThemingJSON = try #require(String(data: encodedSnappThemingData, encoding: .utf8))
         #expect(encodedSnappThemingJSON == expectedSnappThemingJSON)
@@ -52,6 +67,15 @@ struct SnappThemingDesignTokensParserTests {
                 []
                 """#,
                 DesignTokensConverter.Error.invalidRootToken
+            ),
+            (
+                #"""
+                {"unsupported": []}
+                """#,
+                DesignTokensConverter.Error.unsupportedToken(
+                    .array([]),
+                    forKey: "unsupported"
+                )
             ),
             (
                 #"""
@@ -209,6 +233,23 @@ struct SnappThemingDesignTokensParserTests {
                 }
                 """#,
                 DesignTokensFontFamilyValueExtractionError.fontsEmpty
+            ),
+            (
+                #"""
+                {
+                    "malformed": {
+                        "light_color": {"$type": "color", "$value": "#FFFFFF"},
+                        "dark_color": {"$type": "color", "$value": "#000000"}
+                    }
+                }
+                """#,
+                DesignTokensConverter.Error.malformedDynamicColorsGroup(
+                    [
+                        "light_color": .value(.color(.white)),
+                        "dark_color": .value(.color(.black)),
+                    ],
+                    forKey: "malformed"
+                )
             ),
         ] as [(String, Error)]
     )
