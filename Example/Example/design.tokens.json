@@ -1,0 +1,146 @@
+{
+    "base": {
+        "color": {
+            "red": {
+                "$type": "color",
+                "$value": "#FF0000"
+            },
+            "green": {
+                "$type": "color",
+                "$value": "#00FF00"
+            },
+            "blue": {
+                "$type": "color",
+                "$value": "#0000FF"
+            },
+            "black": {
+                "$type": "color",
+                "$value": "#000000"
+            },
+            "white": {
+                "$type": "color",
+                "$value": "#FFFFFF"
+            }
+        },
+        "dimension": {
+            "spacing5": {
+                "$type": "dimension",
+                "$value": {
+                    "unit": "px",
+                    "value": 5
+                }
+            },
+            "spacing10": {
+                "$type": "dimension",
+                "$value": {
+                    "unit": "px",
+                    "value": 10
+                }
+            },
+            "spacing20": {
+                "$type": "dimension",
+                "$value": {
+                    "unit": "px",
+                    "value": 20
+                }
+            }
+        },
+        "fontFamily": {
+            "helveticaNeue": {
+                "$type": "fontFamily",
+                "$value": ["Helvetica Neue"]
+            },
+            "courierNew": {
+                "$type": "fontFamily",
+                "$value": ["Courier New"]
+            },
+        },
+        "fontSize": {
+            "body": {
+                "$type": "dimension",
+                "$value": {
+                    "unit": "rem",
+                    "value": 1
+                }
+            },
+            "h1": {
+                "$type": "dimension",
+                "$value": {
+                    "unit": "rem",
+                    "value": 2
+                }
+            }
+        },
+    },
+    "color": {
+        "primary": { "$value": "{base.color.red}" },
+        "secondary": { "$value": "{base.color.green}" },
+        "tertiary": { "$value": "{base.color.blue}" },
+        "text": {
+            "primary": {
+                "light": { "$value": "{base.color.black}" },
+                "dark": { "$value": "{base.color.white}" }
+            }
+        },
+        "background": {
+            "primary": {
+                "light": { "$value": "{base.color.white}" },
+                "dark": { "$value": "{base.color.black}" }
+            }
+        }
+    },
+    "spacing": {
+        "small": { "$value": "{base.dimension.spacing5}" },
+        "medium": { "$value": "{base.dimension.spacing10}" },
+        "large": { "$value": "{base.dimension.spacing20}" }
+    },
+    "fontFamily": {
+        "default": {
+            "$value": "{base.fontFamily.helveticaNeue}"
+        },
+        "monospaced": {
+            "$value": "{base.fontFamily.courierNew}"
+        }
+    },
+    "typography": {
+        "body": {
+            "$type": "typography",
+            "$value": {
+                "fontFamily": "{fontFamily.default}",
+                "fontSize": "{base.fontSize.body}",
+                "fontWeight": 400,
+                "letterSpacing": {
+                    "value": 0.1,
+                    "unit": "px"
+                },
+                "lineHeight": 1.2
+            }
+        },
+        "h1": {
+            "$type": "typography",
+            "$value": {
+                "fontFamily": "{fontFamily.default}",
+                "fontSize": "{base.fontSize.h1}",
+                "fontWeight": 700,
+                "letterSpacing": {
+                    "value": 0.1,
+                    "unit": "px"
+                },
+                "lineHeight": 1.2
+            }
+        },
+        "code": {
+            "$type": "typography",
+            "$value": {
+                "fontFamily": "{fontFamily.monospaced}",
+                "fontSize": "{base.fontSize.body}",
+                "fontWeight": 700,
+                "letterSpacing": {
+                    "value": 0.1,
+                    "unit": "px"
+                },
+                "lineHeight": 1.2
+            }
+        }
+    }
+}
